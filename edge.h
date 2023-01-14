@@ -1,0 +1,1 @@
+pedge new_edge(int weight, pedge next, pnode dest);
