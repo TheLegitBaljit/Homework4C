@@ -2,7 +2,6 @@
 #include "graph.h"
 #include "node.h"
 #include <stdlib.h>
-#include "edge.h"
 #include "queue.h"
 #include <limits.h>
 
@@ -18,6 +17,7 @@ void build_graph_cmd(pnode *head){
     }
     here->edges = prev;
 }
+
 
 
 void insert_node_cmd(pnode *head){
@@ -117,7 +117,7 @@ void dijkstra(int *arr,pnode here){
     }
 }
 
-void shortsPath_cmd(pnode head){
+void shortest_path_cmd(pnode head){
     int src=0;
     int dest=0;
     while(scanf("%d", &src)==0);
@@ -247,7 +247,7 @@ int main(){
                 printGraph_cmd(head);
                 break;
             case 'S':
-                shortsPath_cmd(head);
+                shortest_path_cmd(head);
                 break;
             case 'D':
                 delete_node_cmd(&head);
