@@ -73,7 +73,6 @@ void delete_node_cmd(pnode *head){
 }
 
 
-
 void printGraph_cmd(pnode head){
     pedge p;
     while(head!=NULL){
@@ -120,6 +119,8 @@ void dijkstra(int *arr,pnode here){
 
 void shortest_path_cmd(pnode head){
     int src=0,dest=0;
+    while(scanf("%d", &src)==0);
+    while(scanf("%d", &dest)==0);
     int src_id,dest_id;
     pnode p;
     pnode curr = head;
