@@ -75,12 +75,13 @@ void delete_node_cmd(pnode *head){
 
 
 void printGraph_cmd(pnode head){
+    pedge p;
     while(head!=NULL){
         printf("node id: %d\n", head->node_num);
-        pedge here = head->edges;
-        while(here){
-            printf("%d -> %d   w: %d\n", head->node_num, here->endpoint->node_num, here->weight);
-            here= here->next;
+        p = head->edges;
+        while(p!=NULL){
+            printf("%d -> %d   w: %d\n", head->node_num, p->endpoint->node_num, p->weight);
+            p= p->next;
         }
         head = head->next;
     }
@@ -103,14 +104,14 @@ void deleteGraph_cmd(pnode* head){
     }
 }
 void dijkstra(int *arr,pnode here){
-    queuenode* here_queue = newqueueNode(here, 0);
-    while (!isEmpty(&here_queue)){
-        here = Remove(&here_queue);
+    queuenode* q = newqueueNode(here, 0);
+    while (!isEmpty(&q)){
+        here = Remove(&q);
         pedge curr_edge = here->edges;
         while(curr_edge!=NULL){
             if (arr[here->seq] + curr_edge->weight < arr[curr_edge->endpoint->seq]){
                 arr[curr_edge->endpoint->seq] = arr[here->seq] + curr_edge->weight;
-                Insert(&here_queue, curr_edge->endpoint, arr[curr_edge->endpoint->seq]);
+                Insert(&q, curr_edge->endpoint, arr[curr_edge->endpoint->seq]);
             }
             curr_edge= curr_edge->next;
         }
@@ -118,19 +119,15 @@ void dijkstra(int *arr,pnode here){
 }
 
 void shortest_path_cmd(pnode head){
-    int src=0;
-    int dest=0;
-    while(scanf("%d", &src)==0);
-    while(scanf("%d", &dest)==0);
-    int src_id;
-    int dest_id;
-    pnode here;
+    int src=0,dest=0;
+    int src_id,dest_id;
+    pnode p;
     pnode curr = head;
     int index=0;
     while (curr!=NULL){
         curr->seq = index;
         if (curr->node_num == src){
-            here = curr;
+            p = curr;
             src_id = index;
         }
         if (curr->node_num == dest){
@@ -146,7 +143,7 @@ void shortest_path_cmd(pnode head){
         arr[i] = INT_MAX;
     }
     arr[src_id] = 0;
-    dijkstra(arr, here);
+    dijkstra(arr, p);
     if (arr[dest_id] < INT_MAX){
         printf("Dijsktra shortest path: %d \n", arr[dest_id]);
     }
@@ -160,6 +157,7 @@ void shortest_path_cmd(pnode head){
 
 void TSP_cmd(pnode head){
     int j;
+    pnode q;
     scanf("%d", &j);
     int *cities=(int*)malloc(sizeof(int)*j);
     if(cities == NULL)
@@ -167,12 +165,12 @@ void TSP_cmd(pnode head){
     for(int i=0; i<j; i++){
         scanf("%d", &cities[i]);
     }
+    q = head;
     int max = 0;
-    pnode here = head;
-    while (here){
-        here->seq = max;
+    while (q!=NULL){
+        q->seq = max;
         max++;
-        here= here->next;
+        q= q->next;
     }
     int ans = INT_MAX;
     permutation(cities, 0, j - 1, max, &ans, head);
@@ -187,6 +185,7 @@ void TSP_cmd(pnode head){
 
 
 void permutation(int* cities, int start, int end, int size_of_nodes, int* ans, pnode head){
+    pnode q;
     if (start == end){
         int check =0;
         int *p=(int*)malloc(sizeof(int) * size_of_nodes);
@@ -195,20 +194,20 @@ void permutation(int* cities, int start, int end, int size_of_nodes, int* ans, p
         for (int i=0;i<size_of_nodes;i++){
             p[i] =  INT_MAX;
         }
-        pnode here = getNode(cities[0], head);
-        p[here->seq] = 0;
+        q = getNode(cities[0], head);
+        p[q->seq] = 0;
         for (int i=1;i<=end;i++){
-            dijkstra(p, here);
+            dijkstra(p, q);
             if (p[getNode(cities[i], head)->seq] == INT_MAX){
                 free (p);
                 return;
             }
-            here = getNode(cities[i], head);
-            check = check + p[here->seq];
+            q = getNode(cities[i], head);
+            check = check + p[q->seq];
             for (int j=0;j<size_of_nodes;j++){
                 p[j] =  INT_MAX;
             }
-            p[here->seq] = 0;
+            p[q->seq] = 0;
         }
         free (p);
         if (check < *ans && check !=0){
